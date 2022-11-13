@@ -21,10 +21,10 @@ This package is developed for the purpose of easily and beautifully plotting MSA
 pyMSAviz is inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://github.com/YuLab-SMU/ggmsa) (R package).
 
 ![example01.png](https://raw.githubusercontent.com/moshi4/pyMSAviz/main/docs/images/api_example01.png)  
-**Fig.1 pyMSAviz simple visualization result**
+**Fig.1 Simple visualization result**
 
 ![example03.png](https://raw.githubusercontent.com/moshi4/pyMSAviz/main/docs/images/api_example03.png)  
-**Fig.2 pyMSAviz customized visualization result**
+**Fig.2 Customized visualization result**
 
 ## Installation
 
@@ -41,7 +41,7 @@ pyMSAviz is inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://
 ## API Usage
 
 Only simple example usage is described in this section.
-For more detail, please see [jupyter notebook](https://moshi4.github.io/pyMSAviz/getting_started/) and [API Docs](https://moshi4.github.io/pyMSAviz/api-docs/msaviz/).
+For more details, please see [jupyter notebook](https://moshi4.github.io/pyMSAviz/getting_started/) and [API Docs](https://moshi4.github.io/pyMSAviz/api-docs/msaviz/).
 
 ### API Example
 
@@ -69,7 +69,7 @@ mv.savefig("api_example02.png")
 
 ![example02.png](https://raw.githubusercontent.com/moshi4/pyMSAviz/main/docs/images/api_example02.png)  
 
-### API Example 3
+#### API Example 3
 
 ```python
 from pymsaviz import MsaViz, get_msa_testdata

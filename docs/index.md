@@ -14,12 +14,12 @@ pyMSAviz is inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://
 
 <figure markdown>
   ![example.png](./images/api_example01.png)
-  <figcaption>pyMSAviz example figure 01</figcaption>
+  <figcaption>Fig.1 Simple visualization result</figcaption>
 </figure>
 
 <figure markdown>
   ![example.png](./images/api_example03.png)
-  <figcaption>pyMSAviz example figure 02</figcaption>
+  <figcaption>Fig.2 Customized visualization result</figcaption>
 </figure>
 
 ## Installation
