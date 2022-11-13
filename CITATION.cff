@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+authors:
+  - family-names: Shimoyama
+    given-names: Yuki
+title: "pyMSAviz: MSA visualization python package for sequence analysis"
+date-released: 2022-11-13
+url: https://github.com/moshi4/pyMSAviz

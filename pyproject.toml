@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "pyMSAviz"
+version = "0.1.0"
+description = "MSA visualization python package for sequence analysis"
+authors = ["moshi4"]
+license = "MIT"
+homepage = "https://moshi4.github.io/pyMSAviz/"
+repository = "https://github.com/moshi4/pyMSAviz/"
+readme = "README.md"
+keywords = [
+    "bioinformatics",
+    "matplotlib",
+    "visualization",
+    "sequence-alignment",
+    "sequence-analysis",
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Framework :: Matplotlib",
+]
+include = ["tests"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=src --tb=line --cov-report=xml --cov-report=term"
+testpaths = ["tests"]
+
+[tool.poetry.scripts]
+pymsaviz = "pymsaviz.scripts.cli:main"
+
+[tool.poetry.dependencies]
+python = "^3.7.1"
+biopython = "^1.79"
+matplotlib = "^3.5.2"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+black = "^22.10.0"
+pydocstyle = "^6.1.1"
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+ipykernel = "^6.16.0"
+mkdocs = "^1.2"
+mkdocstrings = {version = "0.19.0", extras = ["python"]}
+mkdocs-jupyter = "^0.21.0"
+mkdocs-material = "^8.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
