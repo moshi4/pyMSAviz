@@ -85,7 +85,7 @@ class MsaViz:
             self._msa = AlignIO.read(StringIO(content), format)
         else:
             self._msa: MultipleSeqAlignment = AlignIO.read(msa, format)
-        self._msa_summary = SummaryInfo(self._msa)
+        self._consensus_seq = str(SummaryInfo(self._msa).dumb_consensus(threshold=0))
 
         # Check & Set start, end position
         end = self.alignment_length if end is None else end
@@ -166,7 +166,7 @@ class MsaViz:
     @property
     def consensus_seq(self) -> str:
         """Consensus sequence"""
-        return str(self._msa_summary.dumb_consensus(threshold=0))
+        return self._consensus_seq
 
     @property
     def color_scheme(self) -> dict[str, str]:
