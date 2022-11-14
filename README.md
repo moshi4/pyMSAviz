@@ -18,7 +18,9 @@
 
 pyMSAviz is a MSA(Multiple Sequence Alignment) visualization python package for sequence analysis implemented based on matplotlib.
 This package is developed for the purpose of easily and beautifully plotting MSA in Python.
-pyMSAviz is inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://github.com/YuLab-SMU/ggmsa) (R package).
+It also implements the functionality to add markers, text annotations, highlights to specific positions and ranges in MSA.
+pyMSAviz was developed inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://github.com/YuLab-SMU/ggmsa).
+More detailed documentation is available [here](https://moshi4.github.io/pyMSAviz/).
 
 ![example01.png](https://raw.githubusercontent.com/moshi4/pyMSAviz/main/docs/images/api_example01.png)  
 **Fig.1 Simple visualization result**
@@ -41,7 +43,7 @@ pyMSAviz is inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://
 ## API Usage
 
 Only simple example usage is described in this section.
-For more details, please see [jupyter notebook](https://moshi4.github.io/pyMSAviz/getting_started/) and [API Docs](https://moshi4.github.io/pyMSAviz/api-docs/msaviz/).
+For more details, please see [Getting Started](https://moshi4.github.io/pyMSAviz/getting_started/) and [API Docs](https://moshi4.github.io/pyMSAviz/api-docs/msaviz/).
 
 ### API Example
 
@@ -77,7 +79,7 @@ from pymsaviz import MsaViz, get_msa_testdata
 msa_file = get_msa_testdata("MRGPRG.fa")
 mv = MsaViz(msa_file, end=180, wrap_length=60, show_consensus=True)
 
-# Get MSA position less than 50% consensus identity
+# Extract MSA positions less than 50% consensus identity
 pos_ident_less_than_50 = []
 ident_list = mv._get_consensus_identity_list()
 for pos, ident in enumerate(ident_list, 1):

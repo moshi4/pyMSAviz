@@ -9,6 +9,7 @@ use_directory_urls: true
 nav:
   - Home: index.md
   - Getting Started: getting_started.ipynb
+  - Color Schemes: color_schemes.ipynb
   - API Docs: api-docs/msaviz.md
   - CLI Docs: cli-docs/pymsaviz.md
 

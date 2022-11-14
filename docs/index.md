@@ -10,7 +10,8 @@
 
 pyMSAviz is a MSA(Multiple Sequence Alignment) visualization python package for sequence analysis implemented based on matplotlib.
 This package is developed for the purpose of easily and beautifully plotting MSA in Python.
-pyMSAviz is inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://github.com/YuLab-SMU/ggmsa) (R package).
+It also implements the functionality to add markers, text annotations, highlights to specific positions and ranges in MSA.
+pyMSAviz was developed inspired by [Jalview](https://www.jalview.org/) and [ggmsa](https://github.com/YuLab-SMU/ggmsa).
 
 <figure markdown>
   ![example.png](./images/api_example01.png)
