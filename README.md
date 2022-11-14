@@ -123,6 +123,7 @@ pyMSAviz provides simple MSA visualization CLI.
     --show_consensus    Show consensus sequence (Default: OFF)
     --consensus_color   Consensus identity bar color (Default: '#1f77b4')
     --consensus_size    Consensus identity bar height size (Default: 2.0)
+    --sort              Sort MSA order by NJ tree constructed from MSA distance matrix (Default: OFF)
     --dpi               Figure DPI (Default: 300)
     -v, --version       Print version information
     -h, --help          Show this help message and exit
