@@ -26,6 +26,7 @@ def test_all_run_with_options(msa_fasta_file: Path, tmp_path: Path):
         wrap_length=50,
         show_label=False,
         show_seq_char=False,
+        sort=True,
     )
     mv.set_highlight_pos([1, 5, (10, 13), 18])
     mv.set_highlight_pos_by_ident_thr(min_thr=80, max_thr=100)

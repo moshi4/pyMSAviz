@@ -26,6 +26,7 @@ def run(
     show_consensus: bool = False,
     consensus_color: str = "#1f77b4",
     consensus_size: float = 2.0,
+    sort: bool = False,
     dpi: int = 300,
 ):
     """Run MSA visualization"""
@@ -42,6 +43,7 @@ def run(
         show_consensus=show_consensus,
         consensus_color=consensus_color,
         consensus_size=consensus_size,
+        sort=sort,
     )
     mv.savefig(outfile, dpi=dpi)
 
@@ -157,6 +159,12 @@ def get_args() -> argparse.Namespace:
         help=f"Consensus identity bar height size (Default: {default_consensus_size})",
         default=default_consensus_size,
         metavar="",
+    )
+    parser.add_argument(
+        "--sort",
+        help="Sort MSA order by NJ tree constructed from MSA distance matrix "
+        "(Default: OFF)",
+        action="store_true",
     )
     default_dpi = 300
     parser.add_argument(

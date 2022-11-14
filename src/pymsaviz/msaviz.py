@@ -8,9 +8,12 @@ from typing import Any
 from urllib.request import urlopen
 
 import matplotlib.pyplot as plt
-from Bio import AlignIO
+from Bio import AlignIO, Phylo
 from Bio.Align.AlignInfo import SummaryInfo
 from Bio.AlignIO import MultipleSeqAlignment
+from Bio.Phylo.BaseTree import Tree
+from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
+from Bio.SeqRecord import SeqRecord
 from matplotlib import colors
 from matplotlib.axes import Axes
 from matplotlib.collections import PatchCollection
@@ -41,6 +44,7 @@ class MsaViz:
         show_consensus: bool = False,
         consensus_color: str = "#1f77b4",
         consensus_size: float = 2.0,
+        sort: bool = False,
     ):
         """
         Parameters
@@ -76,6 +80,8 @@ class MsaViz:
             Consensus identity bar color
         consensus_size : float, optional
             Consensus identity bar height size
+        sort : bool, optional
+            Sort MSA order by NJ tree constructed from MSA distance matrix
         """
         # Load MSA
         if isinstance(msa, MultipleSeqAlignment):
@@ -85,6 +91,8 @@ class MsaViz:
             self._msa = AlignIO.read(StringIO(content), format)
         else:
             self._msa: MultipleSeqAlignment = AlignIO.read(msa, format)
+        if sort:
+            self._msa = self._sorted_msa_by_njtree(self._msa)
         self._consensus_seq = str(SummaryInfo(self._msa).dumb_consensus(threshold=0))
 
         # Check & Set start, end position
@@ -614,3 +622,49 @@ class MsaViz:
             else:
                 raise ValueError(f"Invalid positions = {positions}")
         return sorted(set(result_positions))
+
+    def _sorted_msa_by_njtree(self, msa: MultipleSeqAlignment) -> MultipleSeqAlignment:
+        """Sort MSA order by NJ tree constructed from MSA distance matrix
+
+        Parameters
+        ----------
+        msa : MultipleSeqAlignment
+            MSA
+
+        Returns
+        -------
+        sorted_msa : MultipleSeqAlignment
+            Sorted MSA
+        """
+        # Sort MSA order by NJ tree
+        njtree = self._construct_njtree(msa)
+        sorted_msa = MultipleSeqAlignment([])
+        name2seq = {rec.id: rec.seq for rec in msa}
+        for leaf in njtree.get_terminals():
+            sorted_msa.append(SeqRecord(name2seq[leaf.name], id=leaf.name))
+        return sorted_msa
+
+    def _construct_njtree(self, msa: MultipleSeqAlignment) -> Tree:
+        """Construct NJ tree from MSA distance matrix
+
+        Parameters
+        ----------
+        msa : MultipleSeqAlignment
+            MSA
+
+        Returns
+        -------
+        njtree : Tree
+            NJ tree
+        """
+        # Calculate MSA distance matrix & construct NJ tree
+        model = "blosum62" if self._is_aa_msa() else "identity"
+        distance_matrix = DistanceCalculator(model).get_distance(msa)
+        njtree = DistanceTreeConstructor().nj(distance_matrix)
+        njtree.root_at_midpoint()
+        return njtree
+
+    def _print_njtree(self) -> None:
+        """Construct NJ tree & Print ASCII text style"""
+        njtree = self._construct_njtree(self.msa)
+        Phylo.draw_ascii(njtree)
