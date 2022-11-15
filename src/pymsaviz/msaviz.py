@@ -120,10 +120,7 @@ class MsaViz:
         self._highlight_positions = None
         self._pos2marker_kws: dict[int, dict[str, Any]] = {}
         self._pos2text_kws: dict[int, dict[str, Any]] = {}
-
-        # Plot configs (constant value)
-        self._ticks_interval = 10
-        self._x_unit_size_ratio = 0.7
+        self.set_plot_params()
 
         # Set color scheme
         if color_scheme is None:
@@ -195,6 +192,31 @@ class MsaViz:
             Available color schemes
         """
         return list(COLOR_SCHEMES.keys())
+
+    def set_plot_params(
+        self,
+        ticks_interval: int = 10,
+        x_unit_size_ratio: float = 0.7,
+        grid_color: str = "lightgrey",
+        show_consensus_char: bool = True,
+    ) -> None:
+        """Set plot parameters to adjust figure appearence in detail
+
+        Parameters
+        ----------
+        ticks_interval : int, optional
+            Ticks interval
+        x_unit_size_ratio : float, optional
+            Ratio of x-axis unit size to y-axis unit size of seq char rectangle
+        grid_color : str, optional
+            Grid color
+        show_consensus_char : bool, optional
+            If True, show consensus character
+        """
+        self._ticks_interval = ticks_interval
+        self._x_unit_size_ratio = x_unit_size_ratio
+        self._grid_color = grid_color
+        self._show_consensus_char = show_consensus_char
 
     def set_custom_color_scheme(self, color_scheme: dict[str, str]) -> None:
         """Set user-defined custom color scheme (Overwrite color scheme setting)
@@ -461,7 +483,7 @@ class MsaViz:
                     color = self.color_scheme.get(seq_char, "#FFFFFF")
                     rect_prop.update(**dict(color=color, lw=0, fill=True))
                 if self._show_grid:
-                    rect_prop.update(**dict(ec="lightgrey", lw=0.5))
+                    rect_prop.update(**dict(ec=self._grid_color, lw=0.5))
                 plot_patches.append(Rectangle(**rect_prop))
 
                 # Plot seq char text
@@ -514,8 +536,11 @@ class MsaViz:
 
         # Plot consensus seq chars on xticks
         xticks = list(map(lambda n: n + 0.5, range(start, end)))
-        xticklabels = list(self.consensus_seq[start:end])
-        ax.set_xticks(xticks, xticklabels, size=10)  # type: ignore
+        if self._show_consensus_char:
+            xticklabels = list(self.consensus_seq[start:end])
+            ax.set_xticks(xticks, xticklabels, size=10)  # type: ignore
+        else:
+            ax.axis("off")
 
         # Plot consensus identity bar
         ident_list = self._get_consensus_identity_list(start, end)
