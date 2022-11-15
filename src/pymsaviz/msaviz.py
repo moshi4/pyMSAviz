@@ -480,7 +480,8 @@ class MsaViz:
                     ax.text(**text_kws)
 
         # Plot colored rectangle patch collection (Use collection for speedup)
-        ax.add_collection(PatchCollection(plot_patches, match_original=True))
+        collection = PatchCollection(plot_patches, match_original=True, clip_on=False)
+        ax.add_collection(collection)
 
     def _plot_consensus(
         self, ax: Axes, start: int | None = None, end: int | None = None
