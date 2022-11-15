@@ -453,22 +453,22 @@ class MsaViz:
             for x_left in range(start, end):
                 # Add colored rectangle patch
                 seq_char = msa_seq[x_left]
-                seq_char_color = self.color_scheme.get(seq_char, "#FFFFFF")
-                rect_prop = dict(xy=(x_left, y_lower), width=1, height=1)
-                rect = Rectangle(**rect_prop, fc=seq_char_color)
+                rect_prop = dict(
+                    xy=(x_left, y_lower), width=1, height=1, color="none", lw=0
+                )
                 highlight_positions = self._highlight_positions
                 if highlight_positions is None or x_left in highlight_positions:
-                    plot_patches.append(rect)
+                    color = self.color_scheme.get(seq_char, "#FFFFFF")
+                    rect_prop.update(**dict(color=color, lw=0, fill=True))
                 if self._show_grid:
-                    grid = Rectangle(**rect_prop, ec="lightgrey", lw=0.5, fill=False)
-                    plot_patches.append(grid)
+                    rect_prop.update(**dict(ec="lightgrey", lw=0.5))
+                plot_patches.append(Rectangle(**rect_prop))
+
                 # Plot seq char text
                 x_center = x_left + 0.5
                 if self._show_seq_char:
-                    # TODO: Better text y-position adjustment logic
-                    y_adj = y_center if seq_char in ("-", "*") else y_center - 0.1
                     ax.text(
-                        x_center, y_adj, seq_char, ha="center", va="center", size=10
+                        x_center, y_center, seq_char, ha="center", va="center", size=10
                     )
                 # Plot marker
                 if cnt == 0 and x_left in self._pos2marker_kws:
