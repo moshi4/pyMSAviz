@@ -224,7 +224,7 @@ class MsaViz:
         Parameters
         ----------
         color_scheme : dict[str, str]
-            Custome color scheme dict (e.g. `{"A": "red", "R": "#F01505", ...}`)
+            Custom color scheme dict (e.g. `{"A": "red", "R": "#F01505", ...}`)
         """
         if isinstance(color_scheme, dict):
             if not all(map(is_color_like, color_scheme.values())):
