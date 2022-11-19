@@ -2,7 +2,7 @@
 
 # Example 01
 echo "Run pyMSAviz CLI example 01..."
-pymsaviz -i HIGD2A.fa -o cli_example01.png --dpi 100
+pymsaviz -i HIGD2A.fa -o cli_example01.png --color_scheme Identity --dpi 100
 
 # Example 02
 echo "Run pyMSAviz CLI example 02..."

@@ -130,7 +130,7 @@ pyMSAviz provides simple MSA visualization CLI.
 
     Available Color Schemes:
     ['Clustal', 'Zappo', 'Taylor', 'Flower', 'Blossom', 'Sunset', 'Ocean', 'Hydrophobicity', 'HelixPropensity', 
-     'StrandPropensity', 'TurnPropensity', 'BuriedIndex', 'Nucleotide', 'Purine/Pyrimidine', 'None']
+     'StrandPropensity', 'TurnPropensity', 'BuriedIndex', 'Nucleotide', 'Purine/Pyrimidine', 'Identity', 'None']
 
 ### CLI Example
 
@@ -138,7 +138,7 @@ Click [here](https://github.com/moshi4/pyMSAviz/raw/main/example/example.zip) to
 
 #### CLI Example 1
 
-    pymsaviz -i ./example/HIGD2A.fa -o cli_example01.png
+    pymsaviz -i ./example/HIGD2A.fa -o cli_example01.png --color_scheme Identity
 
 ![example01.png](https://raw.githubusercontent.com/moshi4/pyMSAviz/main/docs/images/cli_example01.png)  
 
