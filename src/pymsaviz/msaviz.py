@@ -197,7 +197,8 @@ class MsaViz:
     def set_plot_params(
         self,
         ticks_interval: int = 10,
-        x_unit_size_ratio: float = 0.7,
+        x_unit_size: float = 0.14,
+        y_unit_size: float = 0.20,
         grid_color: str = "lightgrey",
         show_consensus_char: bool = True,
         identity_color: str = "#A3A5FF",
@@ -209,8 +210,10 @@ class MsaViz:
         ----------
         ticks_interval : int, optional
             Ticks interval
-        x_unit_size_ratio : float, optional
-            Ratio of x-axis unit size to y-axis unit size of seq char rectangle
+        x_unit_size : float, optional
+            X-axis unit size of seq char rectangle
+        y_unit_size : float, optional
+            Y-axis unit size of seq char rectangle
         grid_color : str, optional
             Grid color
         show_consensus_char : bool, optional
@@ -221,7 +224,8 @@ class MsaViz:
             Min identity color threshold for `Identity` color scheme
         """
         self._ticks_interval = ticks_interval
-        self._x_unit_size_ratio = x_unit_size_ratio
+        self._x_unit_size = x_unit_size
+        self._y_unit_size = y_unit_size
         self._grid_color = grid_color
         self._show_consensus_char = show_consensus_char
         self._identity_color = identity_color
@@ -342,7 +346,7 @@ class MsaViz:
             va="bottom",
         )
         # Add annotation range line markers
-        marker_size = 10 * (self._x_unit_size_ratio / 0.7)
+        marker_size = 10 * (self._x_unit_size / 0.14)
         self.add_markers([range], marker="_", color=range_color, size=marker_size)
 
     def plotfig(self, dpi: int = 100) -> Figure:
@@ -359,14 +363,11 @@ class MsaViz:
             Figure
         """
         # Setup plot figure configs
-        y_unit_size = 0.20
-        x_unit_size = y_unit_size * self._x_unit_size_ratio
-
         ax_type2y_size = {
-            AxesType.MSA: self.msa_count * y_unit_size,
-            AxesType.SPACE: y_unit_size * 1.5,
-            AxesType.CONSENSUS: y_unit_size * self._consensus_size,
-            AxesType.WRAP_SPACE: y_unit_size * self._wrap_space_size,
+            AxesType.MSA: self.msa_count * self._y_unit_size,
+            AxesType.SPACE: self._y_unit_size * 1.5,
+            AxesType.CONSENSUS: self._y_unit_size * self._consensus_size,
+            AxesType.WRAP_SPACE: self._y_unit_size * self._wrap_space_size,
         }
 
         plot_ax_types = []
@@ -379,7 +380,7 @@ class MsaViz:
                 plot_ax_types.append(AxesType.WRAP_SPACE)
 
         y_size_list = [ax_type2y_size[t] for t in plot_ax_types]
-        figsize = (self._wrap_length * x_unit_size, sum(y_size_list))
+        figsize = (self._wrap_length * self._x_unit_size, sum(y_size_list))
         fig: Figure = plt.figure(figsize=figsize, dpi=dpi, tight_layout=True)
         gs = GridSpec(nrows=len(plot_ax_types), ncols=1, height_ratios=y_size_list)
         gs.update(left=0, right=1, bottom=0, top=1, hspace=0, wspace=0)
