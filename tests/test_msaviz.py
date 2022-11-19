@@ -22,7 +22,7 @@ def test_all_run_with_options(msa_fasta_file: Path, tmp_path: Path):
     """Test all run with options (Only check if no error occurs)"""
     mv = MsaViz(
         msa_fasta_file,
-        color_scheme="Taylor",
+        color_scheme="Identity",
         wrap_length=50,
         show_label=False,
         show_seq_char=False,

@@ -94,6 +94,7 @@ class MsaViz:
         if sort:
             self._msa = self._sorted_msa_by_njtree(self._msa)
         self._consensus_seq = str(SummaryInfo(self._msa).dumb_consensus(threshold=0))
+        self._color_scheme_name = color_scheme
 
         # Check & Set start, end position
         end = self.alignment_length if end is None else end
@@ -199,6 +200,8 @@ class MsaViz:
         x_unit_size_ratio: float = 0.7,
         grid_color: str = "lightgrey",
         show_consensus_char: bool = True,
+        identity_color: str = "#A3A5FF",
+        identity_color_min_thr: float = 30,
     ) -> None:
         """Set plot parameters to adjust figure appearence in detail
 
@@ -212,11 +215,17 @@ class MsaViz:
             Grid color
         show_consensus_char : bool, optional
             If True, show consensus character
+        identity_color : str, optional
+            Base color for `Identity` color scheme
+        identity_color_min_thr : float, optional
+            Min identity color threshold for `Identity` color scheme
         """
         self._ticks_interval = ticks_interval
         self._x_unit_size_ratio = x_unit_size_ratio
         self._grid_color = grid_color
         self._show_consensus_char = show_consensus_char
+        self._identity_color = identity_color
+        self._identity_color_min_thr = identity_color_min_thr
 
     def set_custom_color_scheme(self, color_scheme: dict[str, str]) -> None:
         """Set user-defined custom color scheme (Overwrite color scheme setting)
@@ -481,6 +490,8 @@ class MsaViz:
                 highlight_positions = self._highlight_positions
                 if highlight_positions is None or x_left in highlight_positions:
                     color = self.color_scheme.get(seq_char, "#FFFFFF")
+                    if self._color_scheme_name == "Identity":
+                        color = self._get_identity_color(seq_char, x_left)
                     rect_prop.update(**dict(color=color, lw=0, fill=True))
                 if self._show_grid:
                     rect_prop.update(**dict(ec=self._grid_color, lw=0.5))
@@ -603,6 +614,41 @@ class MsaViz:
         cmap = colors.LinearSegmentedColormap.from_list("m", ("white", color))
         norm = colors.Normalize(vmin=vmin, vmax=vmax)
         return [colors.to_hex(cmap(norm(v))) for v in values]
+
+    def _get_identity_color(self, seq_char: str, pos: int) -> str:
+        """Get identity color for `Identity` color scheme
+
+        Parameters
+        ----------
+        seq_char : str
+            Seq character
+        pos : int
+            Seq character position
+
+        Returns
+        -------
+        identity_color : str
+            Identity color
+        """
+        # Exclude characters color
+        exclude_chars = ("-", "*", "X")
+        if seq_char in exclude_chars:
+            return "#FFFFFF"
+        # Get most common characters in target MSA position
+        column_chars = str(self.msa[:, pos])
+        counter = Counter(filter(lambda c: c not in exclude_chars, column_chars))
+        most_common_count = counter.most_common()[0][1]
+        most_common_chars = []
+        for char, count in counter.most_common():
+            if count == most_common_count:
+                most_common_chars.append(char)
+        # Calculate identity & color if target seq char is most common
+        identity = (most_common_count / len(column_chars)) * 100
+        if seq_char in most_common_chars and identity >= self._identity_color_min_thr:
+            color, color_thr = self._identity_color, self._identity_color_min_thr
+            return self._get_interpolate_colors(color, [identity], vmin=color_thr)[0]
+        else:
+            return "#FFFFFF"
 
     def _is_aa_msa(self) -> bool:
         """Check MSA is `aa` or `nt`
