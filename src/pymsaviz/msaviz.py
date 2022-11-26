@@ -196,7 +196,7 @@ class MsaViz:
 
     def set_plot_params(
         self,
-        ticks_interval: int = 10,
+        ticks_interval: int | None = 10,
         x_unit_size: float = 0.14,
         y_unit_size: float = 0.20,
         grid_color: str = "lightgrey",
@@ -208,8 +208,8 @@ class MsaViz:
 
         Parameters
         ----------
-        ticks_interval : int, optional
-            Ticks interval
+        ticks_interval : int | None, optional
+            Ticks interval. If None, ticks interval is not displayed.
         x_unit_size : float, optional
             X-axis unit size of seq char rectangle
         y_unit_size : float, optional
@@ -464,10 +464,14 @@ class MsaViz:
         ax.tick_params(left=False, labelleft=False)
 
         # Plot alignment position every 10 chars on xticks
-        tick_ranges = range(start + 1, end + 1)
-        xticklabels = list(filter(lambda n: n % self._ticks_interval == 0, tick_ranges))
-        xticks = [n - 0.5 for n in xticklabels]
-        ax.set_xticks(xticks, xticklabels, size=8)  # type: ignore
+        ticks_interval = self._ticks_interval
+        if ticks_interval is None:
+            ax.tick_params(bottom=False, labelbottom=False)
+        else:
+            tick_ranges = range(start + 1, end + 1)
+            xticklabels = list(filter(lambda n: n % ticks_interval == 0, tick_ranges))
+            xticks = [n - 0.5 for n in xticklabels]
+            ax.set_xticks(xticks, xticklabels, size=8)  # type: ignore
 
         plot_patches = []
         for cnt in range(self.msa_count):
