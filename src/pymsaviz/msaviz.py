@@ -5,6 +5,7 @@ from collections import Counter
 from io import StringIO
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 from urllib.request import urlopen
 
 import matplotlib.pyplot as plt
@@ -50,14 +51,14 @@ class MsaViz:
         Parameters
         ----------
         msa : str | Path | MultipleSeqAlignment
-            MSA file, MSA file URL, MSA object
+            MSA file, URL MSA file, MSA object
         format : str, optional
             Alignment file format (e.g. `fasta`, `phylip`, `clustal`, `emboss`, etc...)
         color_scheme : str | None, optional
             Color scheme. If None, `Zappo`(AA) or `Nucleotide`(NT) is set.
             [`Clustal`|`Zappo`|`Taylor`|`Flower`|`Blossom`|`Sunset`|`Ocean`|
             `Hydrophobicity`|`HelixPropensity`|`StrandPropensity`|`TurnPropensity`|
-            `BuriedIndex`|`Nucleotide`|`Purine/Pyrimidine`|`None`]
+            `BuriedIndex`|`Nucleotide`|`Purine/Pyrimidine`|`Identity`|`None`]
         start : int, optional
             Start position of visualization (one-based coordinates)
         end : int | None, optional
@@ -86,7 +87,7 @@ class MsaViz:
         # Load MSA
         if isinstance(msa, MultipleSeqAlignment):
             self._msa = msa
-        elif isinstance(msa, str) and msa in ("http://", "https://"):
+        elif isinstance(msa, str) and urlparse(msa).scheme in ("http", "https"):
             content = urlopen(msa).read().decode("utf-8")
             self._msa = AlignIO.read(StringIO(content), format)
         else:
