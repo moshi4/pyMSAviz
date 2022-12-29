@@ -100,7 +100,7 @@ class MsaViz:
         # Check & Set start, end position
         end = self.alignment_length if end is None else end
         if not 1 <= start <= end <= self.alignment_length:
-            err_msg = f"start={start}, end={end} is invalid MSA range "
+            err_msg = f"{start=}, {end=} is invalid MSA range "
             err_msg += f"(1 <= start <= end <= {self.alignment_length})"
             raise ValueError(err_msg)
         self._start, self._end = start - 1, end
@@ -128,7 +128,7 @@ class MsaViz:
         if color_scheme is None:
             color_scheme = "Zappo" if self._is_aa_msa() else "Nucleotide"
         if color_scheme not in self.available_color_schemes():
-            err_msg = f"color_scheme='{color_scheme}' is invalid.\n"
+            err_msg = f"{color_scheme=} is invalid.\n"
             err_msg += f"Available color scheme = {self.available_color_schemes()}"
             raise ValueError(err_msg)
         self._color_scheme = COLOR_SCHEMES[color_scheme]
@@ -242,11 +242,10 @@ class MsaViz:
         """
         if isinstance(color_scheme, dict):
             if not all(map(is_color_like, color_scheme.values())):
-                err_msg = f"color_scheme={color_scheme} contains invalid color code."
-                raise ValueError(err_msg)
+                raise ValueError(f"{color_scheme=} contains invalid color code.")
             self._color_scheme = color_scheme
         else:
-            raise ValueError(f"color_scheme='{color_scheme}' is not dict type.")
+            raise ValueError(f"{color_scheme=} is not dict type.")
 
     def set_highlight_pos(self, positions: list[tuple[int, int] | int]) -> None:
         """Set user-defined highlight MSA positions
@@ -407,7 +406,7 @@ class MsaViz:
                 ax.axis("off")
                 wrap_cnt += 1
             else:
-                raise NotImplementedError(f"plot_ax_type='{plot_ax_type}' is invalid.")
+                raise NotImplementedError(f"{plot_ax_type=} is invalid.")
 
         return fig
 
@@ -698,7 +697,7 @@ class MsaViz:
             elif type(pos) == int:
                 result_positions.append(pos - 1)
             else:
-                raise ValueError(f"Invalid positions = {positions}")
+                raise ValueError(f"{positions=} is invalid.")
         return sorted(set(result_positions))
 
     def _sorted_msa_by_njtree(self, msa: MultipleSeqAlignment) -> MultipleSeqAlignment:

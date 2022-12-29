@@ -30,7 +30,7 @@ testpaths = ["tests"]
 pymsaviz = "pymsaviz.scripts.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = "^3.8"
 biopython = "^1.79"
 matplotlib = "^3.5.2"
 
