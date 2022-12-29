@@ -295,7 +295,7 @@ class MsaViz:
             `1, 5, 10, 11, 12, 13, 18` positions)
         marker : str, optional
             Marker type of matplotlib.
-            See https://matplotlib.org/stable/api/markers_api.html for details.
+            See <https://matplotlib.org/stable/api/markers_api.html> for details.
         color : str, optional
             Marker color
         size : float, optional
