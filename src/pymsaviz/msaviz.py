@@ -4,7 +4,7 @@ import math
 from collections import Counter
 from io import StringIO
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
@@ -120,6 +120,7 @@ class MsaViz:
         self._consensus_color = consensus_color
         self._consensus_size = consensus_size
         self._highlight_positions = None
+        self._custom_color_func: Callable[[int, int, str, MSA], str] | None = None
         self._pos2marker_kws: dict[int, dict[str, Any]] = {}
         self._pos2text_kws: dict[int, dict[str, Any]] = {}
         self.set_plot_params()
@@ -246,6 +247,24 @@ class MsaViz:
             self._color_scheme = color_scheme
         else:
             raise ValueError(f"{color_scheme=} is not dict type.")
+
+    def set_custom_color_func(
+        self,
+        custom_color_func: Callable[[int, int, str, MSA], str],
+    ):
+        """Set user-defined custom color func (Overwrite all other color setting)
+
+        User can change the color of each residue specified
+        by the row and column position of the MSA.
+
+        Parameters
+        ----------
+        custom_color_func : Callable[[int, int, str, MSA], str]
+            Custom color function.
+            `Callable[[int, int, str, MSA], str]` means
+            `Callable[[row_pos, col_pos, seq_char, msa], hexcolor]`
+        """
+        self._custom_color_func = custom_color_func
 
     def set_highlight_pos(self, positions: list[tuple[int, int] | int]) -> None:
         """Set user-defined highlight MSA positions
@@ -497,6 +516,8 @@ class MsaViz:
                     color = self.color_scheme.get(seq_char, "#FFFFFF")
                     if self._color_scheme_name == "Identity":
                         color = self._get_identity_color(seq_char, x_left)
+                    if self._custom_color_func is not None:
+                        color = self._custom_color_func(cnt, x_left, seq_char, self.msa)
                     rect_prop.update(**dict(color=color, lw=0, fill=True))
                 if self._show_grid:
                     rect_prop.update(**dict(ec=self._grid_color, lw=0.5))
