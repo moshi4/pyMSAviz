@@ -32,6 +32,7 @@ class MsaViz:
     def __init__(
         self,
         msa: str | Path | MSA,
+        *,
         format: str = "fasta",
         color_scheme: str | None = None,
         start: int = 1,
@@ -198,6 +199,7 @@ class MsaViz:
 
     def set_plot_params(
         self,
+        *,
         ticks_interval: int | None = 10,
         x_unit_size: float = 0.14,
         y_unit_size: float = 0.20,
@@ -332,6 +334,7 @@ class MsaViz:
         self,
         range: tuple[int, int],
         text: str,
+        *,
         text_color: str = "black",
         text_size: float = 10,
         range_color: str = "black",
