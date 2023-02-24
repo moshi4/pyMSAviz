@@ -11,7 +11,7 @@ from urllib.request import urlopen
 import matplotlib.pyplot as plt
 from Bio import AlignIO, Phylo
 from Bio.Align.AlignInfo import SummaryInfo
-from Bio.AlignIO import MultipleSeqAlignment
+from Bio.AlignIO import MultipleSeqAlignment as MSA
 from Bio.Phylo.BaseTree import Tree
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
 from Bio.SeqRecord import SeqRecord
@@ -31,7 +31,7 @@ class MsaViz:
 
     def __init__(
         self,
-        msa: str | Path | MultipleSeqAlignment,
+        msa: str | Path | MSA,
         format: str = "fasta",
         color_scheme: str | None = None,
         start: int = 1,
@@ -85,13 +85,13 @@ class MsaViz:
             Sort MSA order by NJ tree constructed from MSA distance matrix
         """
         # Load MSA
-        if isinstance(msa, MultipleSeqAlignment):
+        if isinstance(msa, MSA):
             self._msa = msa
         elif isinstance(msa, str) and urlparse(msa).scheme in ("http", "https"):
             content = urlopen(msa).read().decode("utf-8")
             self._msa = AlignIO.read(StringIO(content), format)
         else:
-            self._msa: MultipleSeqAlignment = AlignIO.read(msa, format)
+            self._msa: MSA = AlignIO.read(msa, format)
         if sort:
             self._msa = self._sorted_msa_by_njtree(self._msa)
         self._consensus_seq = str(SummaryInfo(self._msa).dumb_consensus(threshold=0))
@@ -138,7 +138,7 @@ class MsaViz:
     ############################################################
 
     @property
-    def msa(self) -> MultipleSeqAlignment:
+    def msa(self) -> MSA:
         """Multiple Sequence Alignment object (BioPython)"""
         return self._msa
 
@@ -700,7 +700,7 @@ class MsaViz:
                 raise ValueError(f"{positions=} is invalid.")
         return sorted(set(result_positions))
 
-    def _sorted_msa_by_njtree(self, msa: MultipleSeqAlignment) -> MultipleSeqAlignment:
+    def _sorted_msa_by_njtree(self, msa: MSA) -> MSA:
         """Sort MSA order by NJ tree constructed from MSA distance matrix
 
         Parameters
@@ -715,13 +715,13 @@ class MsaViz:
         """
         # Sort MSA order by NJ tree
         njtree = self._construct_njtree(msa)
-        sorted_msa = MultipleSeqAlignment([])
+        sorted_msa = MSA([])
         name2seq = {rec.id: rec.seq for rec in msa}
         for leaf in njtree.get_terminals():
             sorted_msa.append(SeqRecord(name2seq[leaf.name], id=leaf.name))
         return sorted_msa
 
-    def _construct_njtree(self, msa: MultipleSeqAlignment) -> Tree:
+    def _construct_njtree(self, msa: MSA) -> Tree:
         """Construct NJ tree from MSA distance matrix
 
         Parameters
