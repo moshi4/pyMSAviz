@@ -4,14 +4,14 @@ import math
 from collections import Counter
 from io import StringIO
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
 import matplotlib.pyplot as plt
 from Bio import AlignIO, Phylo
 from Bio.Align.AlignInfo import SummaryInfo
-from Bio.AlignIO import MultipleSeqAlignment
+from Bio.AlignIO import MultipleSeqAlignment as MSA
 from Bio.Phylo.BaseTree import Tree
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
 from Bio.SeqRecord import SeqRecord
@@ -31,7 +31,8 @@ class MsaViz:
 
     def __init__(
         self,
-        msa: str | Path | MultipleSeqAlignment,
+        msa: str | Path | MSA,
+        *,
         format: str = "fasta",
         color_scheme: str | None = None,
         start: int = 1,
@@ -85,13 +86,13 @@ class MsaViz:
             Sort MSA order by NJ tree constructed from MSA distance matrix
         """
         # Load MSA
-        if isinstance(msa, MultipleSeqAlignment):
+        if isinstance(msa, MSA):
             self._msa = msa
         elif isinstance(msa, str) and urlparse(msa).scheme in ("http", "https"):
             content = urlopen(msa).read().decode("utf-8")
             self._msa = AlignIO.read(StringIO(content), format)
         else:
-            self._msa: MultipleSeqAlignment = AlignIO.read(msa, format)
+            self._msa: MSA = AlignIO.read(msa, format)
         if sort:
             self._msa = self._sorted_msa_by_njtree(self._msa)
         self._consensus_seq = str(SummaryInfo(self._msa).dumb_consensus(threshold=0))
@@ -120,6 +121,7 @@ class MsaViz:
         self._consensus_color = consensus_color
         self._consensus_size = consensus_size
         self._highlight_positions = None
+        self._custom_color_func: Callable[[int, int, str, MSA], str] | None = None
         self._pos2marker_kws: dict[int, dict[str, Any]] = {}
         self._pos2text_kws: dict[int, dict[str, Any]] = {}
         self.set_plot_params()
@@ -138,7 +140,7 @@ class MsaViz:
     ############################################################
 
     @property
-    def msa(self) -> MultipleSeqAlignment:
+    def msa(self) -> MSA:
         """Multiple Sequence Alignment object (BioPython)"""
         return self._msa
 
@@ -197,6 +199,7 @@ class MsaViz:
 
     def set_plot_params(
         self,
+        *,
         ticks_interval: int | None = 10,
         x_unit_size: float = 0.14,
         y_unit_size: float = 0.20,
@@ -246,6 +249,24 @@ class MsaViz:
             self._color_scheme = color_scheme
         else:
             raise ValueError(f"{color_scheme=} is not dict type.")
+
+    def set_custom_color_func(
+        self,
+        custom_color_func: Callable[[int, int, str, MSA], str],
+    ):
+        """Set user-defined custom color func (Overwrite all other color setting)
+
+        User can change the color of each residue specified
+        by the row and column position of the MSA.
+
+        Parameters
+        ----------
+        custom_color_func : Callable[[int, int, str, MSA], str]
+            Custom color function.
+            `Callable[[int, int, str, MSA], str]` means
+            `Callable[[row_pos, col_pos, seq_char, msa], hexcolor]`
+        """
+        self._custom_color_func = custom_color_func
 
     def set_highlight_pos(self, positions: list[tuple[int, int] | int]) -> None:
         """Set user-defined highlight MSA positions
@@ -313,6 +334,7 @@ class MsaViz:
         self,
         range: tuple[int, int],
         text: str,
+        *,
         text_color: str = "black",
         text_size: float = 10,
         range_color: str = "black",
@@ -497,6 +519,8 @@ class MsaViz:
                     color = self.color_scheme.get(seq_char, "#FFFFFF")
                     if self._color_scheme_name == "Identity":
                         color = self._get_identity_color(seq_char, x_left)
+                    if self._custom_color_func is not None:
+                        color = self._custom_color_func(cnt, x_left, seq_char, self.msa)
                     rect_prop.update(**dict(color=color, lw=0, fill=True))
                 if self._show_grid:
                     rect_prop.update(**dict(ec=self._grid_color, lw=0.5))
@@ -700,7 +724,7 @@ class MsaViz:
                 raise ValueError(f"{positions=} is invalid.")
         return sorted(set(result_positions))
 
-    def _sorted_msa_by_njtree(self, msa: MultipleSeqAlignment) -> MultipleSeqAlignment:
+    def _sorted_msa_by_njtree(self, msa: MSA) -> MSA:
         """Sort MSA order by NJ tree constructed from MSA distance matrix
 
         Parameters
@@ -715,13 +739,13 @@ class MsaViz:
         """
         # Sort MSA order by NJ tree
         njtree = self._construct_njtree(msa)
-        sorted_msa = MultipleSeqAlignment([])
+        sorted_msa = MSA([])
         name2seq = {rec.id: rec.seq for rec in msa}
         for leaf in njtree.get_terminals():
             sorted_msa.append(SeqRecord(name2seq[leaf.name], id=leaf.name))
         return sorted_msa
 
-    def _construct_njtree(self, msa: MultipleSeqAlignment) -> Tree:
+    def _construct_njtree(self, msa: MSA) -> Tree:
         """Construct NJ tree from MSA distance matrix
 
         Parameters

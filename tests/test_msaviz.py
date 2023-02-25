@@ -77,6 +77,27 @@ def test_set_custom_color_scheme(dummy_msa: MultipleSeqAlignment):
         mv.set_custom_color_scheme(invalid_color_scheme)
 
 
+def test_set_custom_color_func(msa_fasta_file: Path, tmp_path: Path):
+    """Test set_custom_color_func"""
+    mv = MsaViz(msa_fasta_file)
+
+    def custom_color_func(
+        row_pos: int, col_pos: int, seq_char: str, msa: MultipleSeqAlignment
+    ) -> str:
+        if col_pos < 60 and seq_char != "-":
+            return "salmon"
+        if col_pos >= 60 and 1 <= row_pos <= 4:
+            return "lime"
+        return "white"
+
+    mv.set_custom_color_func(custom_color_func)
+
+    fig_outfile = tmp_path / "test.png"
+    mv.savefig(fig_outfile)
+
+    assert fig_outfile.exists()
+
+
 def test_consensus_identity():
     """Test consensus identity calculation"""
     msa = MultipleSeqAlignment([])
