@@ -121,7 +121,9 @@ class MsaViz:
         self._consensus_color = consensus_color
         self._consensus_size = consensus_size
         self._highlight_positions = None
-        self._custom_color_func: Callable[[int, int, str, MSA], str] | None = None
+        self._custom_color_func: Callable[
+            [int, int, str, MSA], str | None
+        ] | None = None
         self._pos2marker_kws: dict[int, dict[str, Any]] = {}
         self._pos2text_kws: dict[int, dict[str, Any]] = {}
         self.set_plot_params()
@@ -252,7 +254,7 @@ class MsaViz:
 
     def set_custom_color_func(
         self,
-        custom_color_func: Callable[[int, int, str, MSA], str],
+        custom_color_func: Callable[[int, int, str, MSA], str | None],
     ):
         """Set user-defined custom color func (Overwrite all other color setting)
 
@@ -261,10 +263,10 @@ class MsaViz:
 
         Parameters
         ----------
-        custom_color_func : Callable[[int, int, str, MSA], str]
+        custom_color_func : Callable[[int, int, str, MSA], str | None]
             Custom color function.
-            `Callable[[int, int, str, MSA], str]` means
-            `Callable[[row_pos, col_pos, seq_char, msa], hexcolor]`
+            `Callable[[int, int, str, MSA], str | None]` means
+            `Callable[[row_pos, col_pos, seq_char, msa], hexcolor | None]`
         """
         self._custom_color_func = custom_color_func
 
@@ -520,7 +522,10 @@ class MsaViz:
                     if self._color_scheme_name == "Identity":
                         color = self._get_identity_color(seq_char, x_left)
                     if self._custom_color_func is not None:
-                        color = self._custom_color_func(cnt, x_left, seq_char, self.msa)
+                        custom_color = self._custom_color_func(
+                            cnt, x_left, seq_char, self.msa
+                        )
+                        color = color if custom_color is None else custom_color
                     rect_prop.update(**dict(color=color, lw=0, fill=True))
                 if self._show_grid:
                     rect_prop.update(**dict(ec=self._grid_color, lw=0.5))
