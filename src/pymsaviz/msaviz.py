@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from urllib.request import urlopen
 
 import matplotlib.pyplot as plt
-from Bio import AlignIO, Phylo
+from Bio import AlignIO
 from Bio.Align.AlignInfo import SummaryInfo
 from Bio.AlignIO import MultipleSeqAlignment as MSA
 from Bio.Phylo.BaseTree import Tree
@@ -416,7 +416,8 @@ class MsaViz:
 
         y_size_list = [ax_type2y_size[t] for t in plot_ax_types]
         figsize = (self._wrap_length * self._x_unit_size, sum(y_size_list))
-        fig: Figure = plt.figure(figsize=figsize, dpi=dpi, tight_layout=True)
+        fig: Figure = plt.figure(figsize=figsize, dpi=dpi)  # type: ignore
+        fig.set_layout_engine("tight")
         gs = GridSpec(nrows=len(plot_ax_types), ncols=1, height_ratios=y_size_list)
         gs.update(left=0, right=1, bottom=0, top=1, hspace=0, wspace=0)
 
@@ -795,8 +796,3 @@ class MsaViz:
         njtree = DistanceTreeConstructor().nj(distance_matrix)
         njtree.root_at_midpoint()
         return njtree
-
-    def _print_njtree(self) -> None:
-        """Construct NJ tree & Print ASCII text style"""
-        njtree = self._construct_njtree(self.msa)
-        Phylo.draw_ascii(njtree)
