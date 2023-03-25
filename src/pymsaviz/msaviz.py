@@ -40,6 +40,7 @@ class MsaViz:
         wrap_length: int | None = None,
         wrap_space_size: float = 3.0,
         show_label: bool = True,
+        label_type: str = "id",
         show_seq_char: bool = True,
         show_grid: bool = False,
         show_count: bool = False,
@@ -70,6 +71,10 @@ class MsaViz:
             Space size between wrap MSA plot area
         show_label : bool, optional
             If True, show label
+        label_type : str, optional
+            Label type (`id`|`description`) to be shown when show_label=True.
+            If `label_type="id"`, show omitted id label.
+            If `label_type="description"`, show full description label.
         show_seq_char : bool, optional
             If True, show sequence character
         show_grid : bool, optional
@@ -115,6 +120,7 @@ class MsaViz:
         self._wrap_space_size = wrap_space_size
         self._show_seq_char = show_seq_char
         self._show_label = show_label
+        self._label_type = label_type
         self._show_grid = show_grid
         self._show_count = show_count
         self._show_consensus = show_consensus
@@ -160,6 +166,11 @@ class MsaViz:
     def id_list(self) -> list[str]:
         """MSA ID list"""
         return [rec.id for rec in self._msa]
+
+    @property
+    def desc_list(self) -> list[str]:
+        """MSA description list"""
+        return [rec.description for rec in self._msa]
 
     @property
     def seq_list(self) -> list[str]:
@@ -504,8 +515,14 @@ class MsaViz:
             y_center = y_lower + 0.5
             # Plot label text
             if self._show_label:
-                msa_id = self.id_list[cnt]
-                ax.text(start - 1, y_center, msa_id, ha="right", va="center", size=10)
+                if self._label_type == "id":
+                    label = self.id_list[cnt]
+                elif self._label_type == "description":
+                    label = self.desc_list[cnt]
+                else:
+                    err_msg = f"{self._label_type=} is invalid (`id`|`description`)"
+                    raise ValueError(err_msg)
+                ax.text(start - 1, y_center, label, ha="right", va="center", size=10)
             # Plot count text
             if self._show_count:
                 scale = end - self._start - msa_seq[self._start : end].count("-")
