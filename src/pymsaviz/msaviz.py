@@ -742,12 +742,21 @@ class MsaViz:
         sorted_msa : MultipleSeqAlignment
             Sorted MSA
         """
+        # Set unique id for MSA records to avoid duplicate name error
+        uid2id = {}
+        for idx, rec in enumerate(msa):
+            uid = f"seq{idx}"
+            uid2id[uid] = rec.id
+            rec.id = uid
+        uid2seq = {rec.id: rec.seq for rec in msa}
+        uid2desc = {rec.id: rec.description for rec in msa}
         # Sort MSA order by NJ tree
         njtree = self._construct_njtree(msa)
         sorted_msa = MSA([])
-        name2seq = {rec.id: rec.seq for rec in msa}
         for leaf in njtree.get_terminals():
-            sorted_msa.append(SeqRecord(name2seq[leaf.name], id=leaf.name))
+            uid = str(leaf.name)
+            id, seq, desc = uid2id[uid], uid2seq[uid], uid2desc[uid]
+            sorted_msa.append(SeqRecord(seq, id=id, description=desc))
         return sorted_msa
 
     def _construct_njtree(self, msa: MSA) -> Tree:
