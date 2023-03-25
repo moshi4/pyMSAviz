@@ -24,9 +24,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # Install poetry v1.4.0 to avoid _WheelFileValidationError in debugpy
+      # Latest poetry v1.4.1 cannot install debugpy
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.4.0
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
