@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyMSAviz"
-version = "0.3.0"
+version = "0.4.0"
 description = "MSA visualization python package for sequence analysis"
 authors = ["moshi4"]
 license = "MIT"
