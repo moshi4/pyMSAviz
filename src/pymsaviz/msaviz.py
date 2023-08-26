@@ -417,7 +417,7 @@ class MsaViz:
         y_size_list = [ax_type2y_size[t] for t in plot_ax_types]
         figsize = (self._wrap_length * self._x_unit_size, sum(y_size_list))
         fig: Figure = plt.figure(figsize=figsize, dpi=dpi)  # type: ignore
-        fig.set_layout_engine("tight")
+        fig.tight_layout()
         gs = GridSpec(nrows=len(plot_ax_types), ncols=1, height_ratios=y_size_list)
         gs.update(left=0, right=1, bottom=0, top=1, hspace=0, wspace=0)
 
