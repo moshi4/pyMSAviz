@@ -630,7 +630,7 @@ class MsaViz:
         start = 0 if start is None else start
         end = self.alignment_length if end is None else end
         consensus_identity_list = []
-        for idx, seq_char in enumerate(self.consensus_seq[start:end], start):
+        for idx, _ in enumerate(self.consensus_seq[start:end], start):
             column_chars = str(self.msa[:, idx])
             counter = Counter(filter(lambda c: c not in ("-", "*"), column_chars))
             count = counter.most_common()[0][1] if len(counter) != 0 else 0
@@ -741,7 +741,7 @@ class MsaViz:
         for pos in positions:
             if isinstance(pos, (tuple, list)):
                 result_positions.extend(list(range(pos[0] - 1, pos[1])))
-            elif type(pos) == int:
+            elif isinstance(pos, int):
                 result_positions.append(pos - 1)
             else:
                 raise ValueError(f"{positions=} is invalid.")
