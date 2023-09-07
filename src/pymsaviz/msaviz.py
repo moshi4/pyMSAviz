@@ -469,6 +469,9 @@ class MsaViz:
             dpi=dpi,
             pad_inches=pad_inches,
         )
+        # Clear & close figure to suppress memory leak
+        fig.clear()
+        plt.close(fig)
 
     ############################################################
     # Private Method
