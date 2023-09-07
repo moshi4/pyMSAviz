@@ -16,6 +16,7 @@
     --end               End position of MSA visualization (Default: 'MSA Length')
     --wrap_length       Wrap length (Default: None)
     --wrap_space_size   Space size between wrap MSA plot area (Default: 3.0)
+    --label_type        Label type ('id'[default]|'description')
     --show_grid         Show grid (Default: OFF)
     --show_count        Show seq char count without gap on right side (Default: OFF)
     --show_consensus    Show consensus sequence (Default: OFF)

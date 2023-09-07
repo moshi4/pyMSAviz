@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyMSAviz"
-version = "0.4.0"
+version = "0.4.1"
 description = "MSA visualization python package for sequence analysis"
 authors = ["moshi4"]
 license = "MIT"
@@ -26,6 +26,27 @@ minversion = "6.0"
 addopts = "--cov=src --tb=line --cov-report=xml --cov-report=term"
 testpaths = ["tests"]
 
+# Lint Rules: https://beta.ruff.rs/docs/rules
+[tool.ruff]
+select = ["E", "F", "W", "I", "D", "B"]
+ignore = [
+    "D100",
+    "D101",
+    "D104",
+    "D105",
+    "D205",
+    "D400",
+    "D401",
+    "D403",
+    "D415",
+    "B905",
+]
+src = ["src", "tests"]
+line-length = 88
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
 [tool.poetry.scripts]
 pymsaviz = "pymsaviz.scripts.cli:main"
 
@@ -34,15 +55,14 @@ python = "^3.8"
 biopython = ">=1.79"
 matplotlib = ">=3.5.2"
 
-[tool.poetry.dev-dependencies]
-flake8 = ">=4.0.1"
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.1.2"
 black = ">=22.10.0"
-pydocstyle = ">=6.1.1"
-pytest = ">=7.2.0"
+ruff = ">=0.0.264"
 pytest-cov = ">=4.0.0"
-ipykernel = ">=6.16.0"
+ipykernel = ">=6.13.0"
 mkdocs = ">=1.2"
-mkdocstrings = {version = ">=0.19.0", extras = ["python"]}
+mkdocstrings = { extras = ["python"], version = ">=0.19.0" }
 mkdocs-jupyter = ">=0.21.0"
 mkdocs-material = ">=8.2"
 

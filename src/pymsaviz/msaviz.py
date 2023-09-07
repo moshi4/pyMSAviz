@@ -417,7 +417,7 @@ class MsaViz:
         y_size_list = [ax_type2y_size[t] for t in plot_ax_types]
         figsize = (self._wrap_length * self._x_unit_size, sum(y_size_list))
         fig: Figure = plt.figure(figsize=figsize, dpi=dpi)  # type: ignore
-        fig.set_layout_engine("tight")
+        fig.tight_layout()
         gs = GridSpec(nrows=len(plot_ax_types), ncols=1, height_ratios=y_size_list)
         gs.update(left=0, right=1, bottom=0, top=1, hspace=0, wspace=0)
 
@@ -469,6 +469,9 @@ class MsaViz:
             dpi=dpi,
             pad_inches=pad_inches,
         )
+        # Clear & close figure to suppress memory leak
+        fig.clear()
+        plt.close(fig)
 
     ############################################################
     # Private Method
@@ -630,7 +633,7 @@ class MsaViz:
         start = 0 if start is None else start
         end = self.alignment_length if end is None else end
         consensus_identity_list = []
-        for idx, seq_char in enumerate(self.consensus_seq[start:end], start):
+        for idx, _ in enumerate(self.consensus_seq[start:end], start):
             column_chars = str(self.msa[:, idx])
             counter = Counter(filter(lambda c: c not in ("-", "*"), column_chars))
             count = counter.most_common()[0][1] if len(counter) != 0 else 0
@@ -741,7 +744,7 @@ class MsaViz:
         for pos in positions:
             if isinstance(pos, (tuple, list)):
                 result_positions.extend(list(range(pos[0] - 1, pos[1])))
-            elif type(pos) == int:
+            elif isinstance(pos, int):
                 result_positions.append(pos - 1)
             else:
                 raise ValueError(f"{positions=} is invalid.")

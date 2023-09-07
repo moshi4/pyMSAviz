@@ -21,6 +21,7 @@ def run(
     end: int | None = None,
     wrap_length: int | None = None,
     wrap_space_size: float = 3.0,
+    label_type: str = "id",
     show_grid: bool = False,
     show_count: bool = False,
     show_consensus: bool = False,
@@ -37,6 +38,7 @@ def run(
         end=end,
         wrap_length=wrap_length,
         wrap_space_size=wrap_space_size,
+        label_type=label_type,
         color_scheme=color_scheme,
         show_grid=show_grid,
         show_count=show_count,
@@ -127,6 +129,15 @@ def get_args() -> argparse.Namespace:
         help="Space size between wrap MSA plot area "
         f"(Default: {default_wrap_space_size})",
         default=default_wrap_space_size,
+        metavar="",
+    )
+    default_label_type = "id"
+    parser.add_argument(
+        "--label_type",
+        type=str,
+        help="Label type ('id'[default]|'description')",
+        default=default_label_type,
+        choices=("id", "description"),
         metavar="",
     )
     parser.add_argument(
