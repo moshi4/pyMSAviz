@@ -465,7 +465,7 @@ class MsaViz:
         """
         fig = self.plotfig(dpi=dpi)
         fig.savefig(
-            fname=savefile,
+            fname=str(savefile),
             dpi=dpi,
             pad_inches=pad_inches,
         )
@@ -530,11 +530,11 @@ class MsaViz:
             # Plot count text
             if self._show_count:
                 scale = end - self._start - msa_seq[self._start : end].count("-")
-                ax.text(end + 1, y_center, scale, ha="left", va="center", size=10)
+                ax.text(end + 1, y_center, str(scale), ha="left", va="center", size=10)
             for x_left in range(start, end):
                 # Add colored rectangle patch
                 seq_char = msa_seq[x_left]
-                rect_prop = dict(
+                rect_prop: dict = dict(
                     xy=(x_left, y_lower), width=1, height=1, color="none", lw=0
                 )
                 highlight_positions = self._highlight_positions
@@ -569,7 +569,7 @@ class MsaViz:
 
         # Plot colored rectangle patch collection (Use collection for speedup)
         collection = PatchCollection(plot_patches, match_original=True, clip_on=False)
-        ax.add_collection(collection)
+        ax.add_collection(collection)  # type: ignore
 
     def _plot_consensus(
         self, ax: Axes, start: int | None = None, end: int | None = None
@@ -668,7 +668,7 @@ class MsaViz:
         """
         cmap = colors.LinearSegmentedColormap.from_list("m", ("white", color))
         norm = colors.Normalize(vmin=vmin, vmax=vmax)
-        return [colors.to_hex(cmap(norm(v))) for v in values]
+        return [colors.to_hex(cmap(norm(v))) for v in values]  # type: ignore
 
     def _get_identity_color(self, seq_char: str, pos: int) -> str:
         """Get identity color for `Identity` color scheme
