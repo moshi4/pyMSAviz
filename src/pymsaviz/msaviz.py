@@ -666,7 +666,7 @@ class MsaViz:
         interpolated_colors : list[str]
             Interpolated colors based on values
         """
-        cmap = colors.LinearSegmentedColormap.from_list("m", ("white", color))
+        cmap = colors.LinearSegmentedColormap.from_list("m", ["white", color])
         norm = colors.Normalize(vmin=vmin, vmax=vmax)
         return [colors.to_hex(cmap(norm(v))) for v in values]  # type: ignore
 
