@@ -4,7 +4,7 @@ import math
 from collections import Counter
 from io import StringIO
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, List
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
@@ -47,6 +47,7 @@ class MsaViz:
         show_consensus: bool = False,
         consensus_color: str = "#1f77b4",
         consensus_size: float = 2.0,
+        custom_consensus: List[float] = None,
         sort: bool = False,
     ):
         """
@@ -87,6 +88,8 @@ class MsaViz:
             Consensus identity bar color
         consensus_size : float, optional
             Consensus identity bar height size
+        custom_consensus : List[float], optional
+            List of consensus scores to show under MSA
         sort : bool, optional
             Sort MSA order by NJ tree constructed from MSA distance matrix
         """
@@ -126,6 +129,7 @@ class MsaViz:
         self._show_consensus = show_consensus
         self._consensus_color = consensus_color
         self._consensus_size = consensus_size
+        self._custom_consensus = custom_consensus
         self._highlight_positions = None
         self._custom_color_func: Callable[
             [int, int, str, MSA], str | None
@@ -435,7 +439,7 @@ class MsaViz:
             if plot_ax_type == AxesType.MSA:
                 self._plot_msa(ax, start, end)
             elif plot_ax_type == AxesType.CONSENSUS:
-                self._plot_consensus(ax, start, end)
+                self._plot_consensus(ax, start, end, self._custom_consensus)
             elif plot_ax_type == AxesType.SPACE:
                 ax.axis("off")
             elif plot_ax_type == AxesType.WRAP_SPACE:
@@ -572,7 +576,11 @@ class MsaViz:
         ax.add_collection(collection)  # type: ignore
 
     def _plot_consensus(
-        self, ax: Axes, start: int | None = None, end: int | None = None
+        self,
+        ax: Axes,
+        start: int | None = None,
+        end: int | None = None,
+        custom_consensus: List[float] | None = None
     ) -> None:
         """Plot consensus seq char & identity bar
 
@@ -609,7 +617,10 @@ class MsaViz:
             ax.axis("off")
 
         # Plot consensus identity bar
-        ident_list = self._get_consensus_identity_list(start, end)
+        if custom_consensus is None:
+            ident_list = self._get_consensus_identity_list(start, end)
+        else:
+            ident_list = custom_consensus[start:end]
         color_list = self._get_interpolate_colors(self._consensus_color, ident_list)
         ax.bar(xticks, ident_list, width=1, color=color_list, ec="white", lw=0.5)
 
