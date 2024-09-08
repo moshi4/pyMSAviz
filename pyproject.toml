@@ -1,11 +1,9 @@
-[tool.poetry]
+[project]
 name = "pyMSAviz"
-version = "0.4.2"
+dynamic = ["version"]
 description = "MSA visualization python package for sequence analysis"
-authors = ["moshi4"]
+authors = [{ name = "moshi4", email = "" }]
 license = "MIT"
-homepage = "https://moshi4.github.io/pyMSAviz/"
-repository = "https://github.com/moshi4/pyMSAviz/"
 readme = "README.md"
 keywords = [
     "bioinformatics",
@@ -19,53 +17,68 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Framework :: Matplotlib",
 ]
-include = ["tests"]
+requires-python = ">=3.8"
+dependencies = ["matplotlib>=3.5.2", "biopython>=1.79"]
+
+[project.urls]
+homepage = "https://moshi4.github.io/pyMSAviz/"
+repository = "https://github.com/moshi4/pyMSAviz/"
+
+[project.scripts]
+pymsaviz = "pymsaviz.scripts.cli:main"
+
+[tool.hatch.version]
+path = "src/pymsaviz/__init__.py"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.4.0",
+    "pre-commit>=3.5.0",
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "ipykernel>=6.13.0",
+    # docs
+    "mkdocs>=1.2",
+    "mkdocstrings[python]>=0.19.0",
+    "mkdocs-jupyter>=0.21.0",
+    "mkdocs-material>=8.2",
+    "black>=22.3.0",
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "--cov=src --tb=line --cov-report=xml --cov-report=term"
 testpaths = ["tests"]
 
-# Lint Rules: https://beta.ruff.rs/docs/rules
 [tool.ruff]
-select = ["E", "F", "W", "I", "D", "B"]
-ignore = [
-    "D100",
-    "D101",
-    "D104",
-    "D105",
-    "D205",
-    "D400",
-    "D401",
-    "D403",
-    "D415",
-    "B905",
-]
-src = ["src", "tests"]
+include = ["src/**.py", "tests/**.py"]
 line-length = 88
 
-[tool.ruff.pydocstyle]
+# Lint Rules: https://docs.astral.sh/ruff/rules/
+[tool.ruff.lint]
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle (Error)
+    "W", # pycodestyle (Warning)
+    "I", # isort
+    "D", # pydocstyle
+]
+ignore = [
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D205", # 1 blank line required between summary line and description
+    "D400", # First line should end with a period
+    "D401", # First line should be in imperative mood
+    "D403", # First word of the first line should be properly capitalized
+    "D415", # First line should end with a period, question mark, or exclamation point
+]
+
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-[tool.poetry.scripts]
-pymsaviz = "pymsaviz.scripts.cli:main"
-
-[tool.poetry.dependencies]
-python = "^3.8"
-biopython = ">=1.79"
-matplotlib = ">=3.5.2"
-
-[tool.poetry.group.dev.dependencies]
-pytest = ">=7.1.2"
-black = ">=22.10.0"
-ruff = ">=0.0.264"
-pytest-cov = ">=4.0.0"
-ipykernel = ">=6.13.0"
-mkdocs = ">=1.2"
-mkdocstrings = { extras = ["python"], version = ">=0.19.0" }
-mkdocs-jupyter = ">=0.21.0"
-mkdocs-material = ">=8.2"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
