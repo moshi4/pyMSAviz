@@ -127,9 +127,9 @@ class MsaViz:
         self._consensus_color = consensus_color
         self._consensus_size = consensus_size
         self._highlight_positions = None
-        self._custom_color_func: Callable[
-            [int, int, str, MSA], str | None
-        ] | None = None
+        self._custom_color_func: Callable[[int, int, str, MSA], str | None] | None = (
+            None
+        )
         self._pos2marker_kws: dict[int, dict[str, Any]] = {}
         self._pos2text_kws: dict[int, dict[str, Any]] = {}
         self.set_plot_params()
