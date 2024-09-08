@@ -10,17 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-
-      - name: Install MkDocs & Plugins
+      - name: Install Rye
         run: |
-          pip install .
-          pip install mkdocs mkdocs-material mkdocs-jupyter mkdocstrings[python] black
+          curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+
+      - name: Install Python & MkDocs & Plugins
+        run: rye sync
 
       - name: Publish document
-        run: mkdocs gh-deploy --force
+        run: rye run mkdocs gh-deploy --force
