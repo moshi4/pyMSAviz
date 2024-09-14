@@ -30,7 +30,7 @@ More detailed documentation is available [here](https://moshi4.github.io/pyMSAvi
 
 ## Installation
 
-`Python 3.8 or later` is required for installation.
+`Python 3.9 or later` is required for installation.
 
 **Install PyPI package:**
 
