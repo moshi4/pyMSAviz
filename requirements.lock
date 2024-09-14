@@ -10,21 +10,21 @@
 #   universal: false
 
 -e file:.
-biopython==1.83
+biopython==1.84
     # via pymsaviz
-contourpy==1.1.1
+contourpy==1.3.0
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
 fonttools==4.53.1
     # via matplotlib
-importlib-resources==6.4.4
+importlib-resources==6.4.5
     # via matplotlib
 kiwisolver==1.4.7
     # via matplotlib
-matplotlib==3.7.5
+matplotlib==3.9.2
     # via pymsaviz
-numpy==1.24.4
+numpy==2.0.2
     # via biopython
     # via contourpy
     # via matplotlib
