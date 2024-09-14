@@ -110,6 +110,7 @@ pyMSAviz provides simple MSA visualization CLI.
 
 ### Options
 
+    $ pymsaviz --help
     usage: pymsaviz [options] -i msa.fa -o msa_viz.png
 
     MSA(Multiple Sequence Alignment) visualization CLI tool
