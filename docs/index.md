@@ -25,7 +25,7 @@ pyMSAviz was developed inspired by [Jalview](https://www.jalview.org/) and [ggms
 
 ## Installation
 
-`Python 3.8 or later` is required for installation.
+`Python 3.9 or later` is required for installation.
 
 **Install PyPI package:**
 

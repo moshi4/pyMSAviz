@@ -61,6 +61,7 @@ def get_args() -> argparse.Namespace:
     description = "MSA(Multiple Sequence Alignment) visualization CLI tool"
     parser = argparse.ArgumentParser(
         description=description,
+        usage="pymsaviz [options] -i msa.fa -o msa_viz.png",
         add_help=False,
         epilog=f"Available Color Schemes:\n{MsaViz.available_color_schemes()}",
         formatter_class=argparse.RawDescriptionHelpFormatter,

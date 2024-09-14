@@ -10,7 +10,6 @@ from urllib.request import urlopen
 
 import matplotlib.pyplot as plt
 from Bio import AlignIO
-from Bio.Align.AlignInfo import SummaryInfo
 from Bio.AlignIO import MultipleSeqAlignment as MSA
 from Bio.Phylo.BaseTree import Tree
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
@@ -100,7 +99,7 @@ class MsaViz:
             self._msa: MSA = AlignIO.read(msa, format)
         if sort:
             self._msa = self._sorted_msa_by_njtree(self._msa)
-        self._consensus_seq = str(SummaryInfo(self._msa).dumb_consensus(threshold=0))
+        self._consensus_seq = self._get_consensus_seq(self._msa)
         self._color_scheme_name = color_scheme
 
         # Check & Set start, end position
@@ -127,9 +126,9 @@ class MsaViz:
         self._consensus_color = consensus_color
         self._consensus_size = consensus_size
         self._highlight_positions = None
-        self._custom_color_func: Callable[
-            [int, int, str, MSA], str | None
-        ] | None = None
+        self._custom_color_func: Callable[[int, int, str, MSA], str | None] | None = (
+            None
+        )
         self._pos2marker_kws: dict[int, dict[str, Any]] = {}
         self._pos2text_kws: dict[int, dict[str, Any]] = {}
         self.set_plot_params()
@@ -612,6 +611,47 @@ class MsaViz:
         ident_list = self._get_consensus_identity_list(start, end)
         color_list = self._get_interpolate_colors(self._consensus_color, ident_list)
         ax.bar(xticks, ident_list, width=1, color=color_list, ec="white", lw=0.5)
+
+    def _get_consensus_seq(self, msa: MSA) -> str:
+        """Get consensus sequence
+
+        Parameters
+        ----------
+        msa : MSA
+            Multiple sequence alignment
+
+        Returns
+        -------
+        consensus_seq : str
+            Consensus suquence
+        """
+        consensus_seq = ""
+        ambiguous_char = "X"
+        aln_len = msa.get_alignment_length()
+
+        for idx in range(aln_len):
+            chars = ""
+            for record in self._msa:
+                char = str(record.seq)[idx]
+                if char != "-" and char != ".":
+                    chars += str(record.seq)[idx]
+            if len(chars) == 0:
+                consensus_seq += ambiguous_char
+                continue
+
+            char2count = Counter(chars)
+            most_freq_chars = []
+            most_freq_count = char2count.most_common()[0][1]
+            for char, count in char2count.most_common():
+                if count == most_freq_count:
+                    most_freq_chars.append(char)
+
+            if len(most_freq_chars) == 1:
+                consensus_seq += most_freq_chars[0]
+            else:
+                consensus_seq += ambiguous_char
+
+        return consensus_seq
 
     def _get_consensus_identity_list(
         self, start: int | None = None, end: int | None = None
