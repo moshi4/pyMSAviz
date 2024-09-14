@@ -12,7 +12,7 @@ __all__ = [
     "get_msa_testdata",
 ]
 
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 
 # Setting matplotlib rc(runtime configuration) parameters
 # https://matplotlib.org/stable/tutorials/introductory/customizing.html
