@@ -161,3 +161,7 @@ Click [here](https://github.com/moshi4/pyMSAviz/raw/main/example/example.zip) to
              --color_scheme Flower --show_grid --show_consensus --consensus_color tomato 
 
 ![example03.png](https://raw.githubusercontent.com/moshi4/pyMSAviz/main/docs/images/cli_example03.png)  
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=moshi4/pyMSAviz&type=Date)](https://star-history.com/#moshi4/pyMSAviz&Date)
